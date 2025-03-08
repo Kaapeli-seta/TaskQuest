@@ -25,6 +25,8 @@ export async function login(formData: FormData) {
   }
   const user = await getUserByUsername(userLogin.username);
 
+  // For test reasons password is not checked
+  // IMPORTANT: remember to add password check
   if (!user) {
     throw new CustomError("Incorrect username/password", 403);
   }
@@ -39,7 +41,7 @@ export async function login(formData: FormData) {
     expiresIn: "7d",
   });
 
-  // Save the session in a cookiev
+  // Save the session in a cookies
   const cookieStore = await cookies();
   cookieStore.set("session", session, { expires, httpOnly: true });
 }

@@ -50,7 +50,7 @@ const BASE_MEDIA_QUERY = `
 const fetchOwnerMedia = async (
   userToken: TokenContent
 ): Promise<MediaItem[]> => {
-  const sql = `SELECT title, quest_text, reward_type, reward_count, repeat_count, is_done, is_public FROM Quests WHERE user_id = ?`;
+  const sql = `SELECT quest_id, title, quest_text, reward_type, reward_count, repeat_count, is_done, is_public, created_at FROM Quests WHERE user_id = ?`;
   const params = userToken.user_id;
   const stmt = promisePool.format(sql, params);
 
