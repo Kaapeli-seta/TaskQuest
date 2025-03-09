@@ -1,6 +1,6 @@
 import { ERROR_MESSAGES } from "@/utils/errorMessages";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
-import { MediaItem, UserLevel, TokenContent } from "@/types/DBTypes";
+import { MediaItem, UserLevel, TokenContent, QuestItem } from "@/types/DBTypes";
 import promisePool from "@/lib/db";
 import { MessageResponse } from "@/types/MessageTypes";
 import { fetchData } from "@/lib/functions";
@@ -49,12 +49,12 @@ const BASE_MEDIA_QUERY = `
 
 const fetchOwnerMedia = async (
   userToken: TokenContent
-): Promise<MediaItem[]> => {
+): Promise<QuestItem[]> => {
   const sql = `SELECT quest_id, title, quest_text, reward_type, reward_count, repeat_count, is_done, is_public, created_at FROM Quests WHERE user_id = ?`;
   const params = userToken.user_id;
   const stmt = promisePool.format(sql, params);
 
-  const [rows] = await promisePool.execute<RowDataPacket[] & MediaItem[]>(stmt);
+  const [rows] = await promisePool.execute<RowDataPacket[] & QuestItem[]>(stmt);
   return rows;
 };
 

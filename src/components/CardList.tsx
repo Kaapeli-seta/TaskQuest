@@ -8,10 +8,10 @@ const CardList = async () => {
   if (!userToken) return;
   const mediaList = await fetchOwnerMedia(userToken);
 
-  const stated =
-    "flex flex-col justify-between transition p-4 shadow-lg shadow-regal-blue rounded-md bg-background hover:scale-110 hover:cursor-grab active:cursor-grabbing text-inherit w-fit max-w-80 min-h-110";
+  const inproggres =
+    "flex flex-col justify-between transition shadow-lg shadow-regal-blue rounded-md bg-background hover:scale-110 hover:cursor-grab active:cursor-grabbing text-inherit w-fit max-w-80 min-h-110 focus:-translate-y-10";
 
-  const statea = "";
+  const done = inproggres + " opacity-40 order-1";
 
   return (
     <section className="flex flex-col p-8">
@@ -19,12 +19,13 @@ const CardList = async () => {
         {mediaList.map((item, index) => (
           <div
             draggable="true"
+            tabIndex={item.is_done ? 2 : 1}
             key={index}
-            className={item.is_done ? stated : stated}
+            className={item.is_done ? done : inproggres}
           >
-            <h3 className="text-lg font-bold self-center">{item.title}</h3>
-            <p className="text-center">{item.quest_text}</p>
-            <div className="flex justify-between">
+            <h3 className="text-lg font-bold self-center p-4">{item.title}</h3>
+            <p className="text-center p-4">{item.quest_text}</p>
+            <div className="flex justify-between p-4">
               <p>
                 {item.reward_type}: {item.reward_count}
               </p>
@@ -34,7 +35,7 @@ const CardList = async () => {
             </div>
           </div>
         ))}
-        <div className="flex border-6 border-dashed transition p-4 rounded-md bg-transparent hover:scale-103 hover:cursor-pointer text-inherit w-fit min-w-75 max-w-80 min-h-105">
+        <div className="flex border-6 border-dashed transition rounded-md bg-transparent hover:scale-103 hover:cursor-pointer text-inherit w-fit min-w-75 max-w-80 min-h-105">
           <Link
             href="/cards/?show=true"
             className="text-center flex-auto text-5xl h-full leading-95"

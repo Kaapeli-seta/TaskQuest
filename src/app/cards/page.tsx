@@ -5,8 +5,8 @@ type SearchParamProps = {
   searchParams: Record<string, string> | null | undefined;
 };
 
-const Cards = ({ searchParams }: SearchParamProps) => {
-  const show = searchParams?.show;
+const Cards = async ({ searchParams }: SearchParamProps) => {
+  const { show } = await searchParams;
   return (
     <main>
       <h1 className="text-4xl font-bold">Cards</h1>
