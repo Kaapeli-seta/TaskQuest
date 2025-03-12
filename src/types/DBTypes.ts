@@ -13,7 +13,6 @@ type User = {
 };
 
 type UserStats = {
-  user_id: number;
   user_exp: number;
   user_level: number;
   user_points: number;

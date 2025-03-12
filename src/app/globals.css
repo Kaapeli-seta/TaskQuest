@@ -1,12 +1,14 @@
 @import "tailwindcss";
 
 :root {
+  --bg-shade: #d8d5d5;
   --background: #ededed;
   --foreground: #171717;
   --sd-color: #94abc7;
 }
 
 @theme inline {
+  --color-bg-shade: var(--bg-shade);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -16,6 +18,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
+    --bg-shade: #1b1b1d;
     --background: #29292c;
     --foreground: #ededed;
     --sd-color: #171717;

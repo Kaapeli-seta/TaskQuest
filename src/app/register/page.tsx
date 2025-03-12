@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { login } from "../../lib/authActions";
 
-export default async function Login() {
+export default async function Register() {
   return (
     <section>
       <div className="flex flex-col p-8">

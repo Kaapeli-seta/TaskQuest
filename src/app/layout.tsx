@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import { getSession } from "@/lib/authActions";
+import Image from "next/image";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,23 +26,32 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const tokenContent = await getSession();
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <nav className="flex items-center justify-between flex-wrap bg-teal-500 p-6">
-          <div className="flex items-center flex-shrink-0 text-white mr-6">
-            <span className="font-semibold text-xl tracking-tight">
-              Example Site
-            </span>
-          </div>
+        <nav className="flex items-center justify-between flex-wrap bg-bg-shade p-6">
+          <Link href="/">
+            <Image
+              src="/TaskQuest.png"
+              alt="something"
+              width={50}
+              height={50}
+            ></Image>
+            <div className="flex items-center flex-shrink-0 text-foreground mr-6">
+              <span className="font-semibold text-xl tracking-tight">
+                TaskQuest
+              </span>
+            </div>
+          </Link>
           <div className="lg:flex lg:items-center lg:w-auto justify-end">
             <ul className="flex">
               <li className="mr-4">
                 <Link
                   href="/"
-                  className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white"
+                  className="block mt-4 lg:inline-block lg:mt-0 text-foreground hover:text-white"
                 >
                   Home
                 </Link>
@@ -51,7 +61,7 @@ export default async function RootLayout({
                   <li className="mr-4">
                     <Link
                       href="/profile"
-                      className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white"
+                      className="block mt-4 lg:inline-block lg:mt-0 text-foreground hover:text-white"
                     >
                       Profile
                     </Link>
@@ -59,9 +69,17 @@ export default async function RootLayout({
                   <li className="mr-4">
                     <Link
                       href="/cards"
-                      className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white"
+                      className="block mt-4 lg:inline-block lg:mt-0 text-foreground hover:text-white"
                     >
                       Cards
+                    </Link>
+                  </li>
+                  <li className="mr-4">
+                    <Link
+                      href="/shared"
+                      className="block mt-4 lg:inline-block lg:mt-0 text-foreground hover:text-white"
+                    >
+                      Public
                     </Link>
                   </li>
                 </>
@@ -69,7 +87,7 @@ export default async function RootLayout({
                 <li className="mr-4">
                   <Link
                     href="/login"
-                    className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white"
+                    className="block mt-4 lg:inline-block lg:mt-0 text-foreground hover:text-white"
                   >
                     login
                   </Link>

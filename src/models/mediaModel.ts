@@ -1,6 +1,12 @@
 import { ERROR_MESSAGES } from "@/utils/errorMessages";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
-import { MediaItem, UserLevel, TokenContent, QuestItem } from "@/types/DBTypes";
+import {
+  MediaItem,
+  UserLevel,
+  TokenContent,
+  QuestItem,
+  UserStats,
+} from "@/types/DBTypes";
 import promisePool from "@/lib/db";
 import { MessageResponse } from "@/types/MessageTypes";
 import { fetchData } from "@/lib/functions";
@@ -50,13 +56,77 @@ const BASE_MEDIA_QUERY = `
 const fetchOwnerMedia = async (
   userToken: TokenContent
 ): Promise<QuestItem[]> => {
-  const sql = `SELECT quest_id, title, quest_text, reward_type, reward_count, repeat_count, is_done, is_public, created_at FROM Quests WHERE user_id = ?`;
+  const sql = `SELECT quest_id, title, quest_text, reward_type, reward_count, reset_time, is_done, is_public, created_at FROM Quests WHERE user_id = ?`;
   const params = userToken.user_id;
   const stmt = promisePool.format(sql, params);
 
   const [rows] = await promisePool.execute<RowDataPacket[] & QuestItem[]>(stmt);
   return rows;
 };
+
+const fetchOwnerUncompleteMedia = async (
+  userToken: TokenContent
+): Promise<QuestItem[]> => {
+  const sql = `SELECT quest_id, title, quest_text, reward_type, reward_count, reset_time, is_done, is_public, created_at FROM Quests WHERE user_id = ? AND is_done=0 AND selected=0`;
+  const params = userToken.user_id;
+  const stmt = promisePool.format(sql, params);
+
+  const [rows] = await promisePool.execute<RowDataPacket[] & QuestItem[]>(stmt);
+  return rows;
+};
+const fetchOwnerSelectedMedia = async (
+  userToken: TokenContent
+): Promise<QuestItem[]> => {
+  const sql = `SELECT quest_id, title, quest_text, reward_type, reward_count, reset_time, is_done, is_public, created_at FROM Quests WHERE user_id = ? AND is_done=0 AND selected=1`;
+  const params = userToken.user_id;
+  const stmt = promisePool.format(sql, params);
+
+  const [rows] = await promisePool.execute<RowDataPacket[] & QuestItem[]>(stmt);
+  return rows;
+};
+
+const updateCardSelect = async (item: QuestItem): Promise<void> => {
+  console.log(
+    `UPDATE Quests SET selected = 1 WHERE quest_id = ${item.quest_id}`
+  );
+  const sql = `UPDATE Quests SET selected = 1 WHERE quest_id = ?`;
+  const stmt = promisePool.format(sql, item.quest_id);
+  await promisePool.execute<RowDataPacket[] & QuestItem[]>(stmt);
+};
+
+const fetchPublicMedia = async (): Promise<
+  (QuestItem & { username: string })[]
+> => {
+  const stmt = promisePool.format(
+    `SELECT Users.username, Quests.quest_id, Quests.title, Quests.quest_text, Quests.reward_type, Quests.reward_count, Quests.reset_time, Quests.is_done, Quests.is_public, Quests.created_at FROM Quests 
+    JOIN Users ON Quests.user_id = Users.user_id
+    WHERE is_public = 1`
+  );
+  const [rows] = await promisePool.execute<
+    RowDataPacket[] & (QuestItem & { username: string })[]
+  >(stmt);
+  return rows;
+};
+
+const fetchUserStats = async (userToken: TokenContent): Promise<UserStats> => {
+  const sql = `SELECT user_exp, user_level, user_points, user_int, user_str, user_dex FROM UserStats WHERE user_id = ?`;
+  const params = userToken.user_id;
+  const stmt = promisePool.format(sql, params);
+
+  const [rows] = await promisePool.execute<RowDataPacket[] & UserStats[]>(stmt);
+  if (!rows.length)
+    throw new CustomError(ERROR_MESSAGES.MEDIA.NOT_FOUND_LIKED, 404);
+  return rows[0];
+};
+
+///
+///
+///
+///
+///
+///
+/// Unused Functions
+///
 
 const fetchAllMedia = async (
   page: number | undefined = undefined,
@@ -255,6 +325,11 @@ const fetchMostLikedMedia = async (): Promise<MediaItem> => {
 
 export {
   fetchOwnerMedia,
+  fetchOwnerUncompleteMedia,
+  fetchOwnerSelectedMedia,
+  updateCardSelect,
+  fetchPublicMedia,
+  fetchUserStats,
   fetchAllMedia,
   fetchMediaById,
   postMedia,

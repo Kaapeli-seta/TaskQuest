@@ -1,5 +1,6 @@
 import { getSession } from "@/lib/authActions";
 import { fetchOwnerMedia } from "@/models/mediaModel";
+import { cardComplete, cardStyle } from "@/styles/style";
 
 import Link from "next/link";
 
@@ -7,11 +8,6 @@ const CardList = async () => {
   const userToken = await getSession();
   if (!userToken) return;
   const mediaList = await fetchOwnerMedia(userToken);
-
-  const inproggres =
-    "flex flex-col justify-between transition shadow-lg shadow-regal-blue rounded-md bg-background hover:scale-110 hover:cursor-grab active:cursor-grabbing text-inherit w-fit max-w-80 min-h-110 focus:-translate-y-10";
-
-  const done = inproggres + " opacity-40 order-1";
 
   return (
     <section className="flex flex-col p-8">
@@ -21,7 +17,7 @@ const CardList = async () => {
             draggable="true"
             tabIndex={item.is_done ? 2 : 1}
             key={index}
-            className={item.is_done ? done : inproggres}
+            className={item.is_done ? cardComplete : cardStyle}
           >
             <h3 className="text-lg font-bold self-center p-4">{item.title}</h3>
             <p className="text-center p-4">{item.quest_text}</p>
