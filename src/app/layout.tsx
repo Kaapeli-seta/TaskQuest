@@ -60,22 +60,6 @@ export default async function RootLayout({
                 <>
                   <li className="mr-4">
                     <Link
-                      href="/profile"
-                      className="block mt-4 lg:inline-block lg:mt-0 text-foreground hover:text-white"
-                    >
-                      Profile
-                    </Link>
-                  </li>
-                  <li className="mr-4">
-                    <Link
-                      href="/cards"
-                      className="block mt-4 lg:inline-block lg:mt-0 text-foreground hover:text-white"
-                    >
-                      Cards
-                    </Link>
-                  </li>
-                  <li className="mr-4">
-                    <Link
                       href="/shared"
                       className="block mt-4 lg:inline-block lg:mt-0 text-foreground hover:text-white"
                     >
@@ -96,7 +80,7 @@ export default async function RootLayout({
             </ul>
           </div>
         </nav>
-        <div className="container mx-auto pt-4 bg-inherit">{children}</div>
+        <div className="pt-4 bg-inherit w-full">{children}</div>
       </body>
     </html>
   );

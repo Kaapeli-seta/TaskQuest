@@ -2,7 +2,7 @@
 
 import CustomError from "@/classes/CustomError";
 import { fetchData } from "@/lib/functions";
-import { MediaResponse, MessageResponse } from "@/types/MessageTypes";
+import { MediaResponse } from "@/types/MessageTypes";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -14,67 +14,22 @@ const Modal = () => {
     e.preventDefault();
 
     try {
-      //create form data and add the form content to it
       const formData = new FormData(e.currentTarget);
-      //send the form data to Next.js API endpoint /api/media using fetchData function
       const options = {
         method: "POST",
         body: formData,
       };
       const uploadResult = await fetchData<MediaResponse>(
-        "/api/media",
+        "/api/cards",
         options
       );
-      // if result OK, redirect to the home page to see the uploaded media
       if (!uploadResult) {
         throw new CustomError("Erro uploading media", 500);
       }
-
-      // lisätään tägi lomakkeesta
-      const data = {
-        tag_name: formData.get("tag") as string,
-        media_id: uploadResult.media.media_id,
-      };
-
-      const tagOptions = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      };
-
-      const tagResult = await fetchData<MessageResponse>(
-        "/api/tags",
-        tagOptions
-      );
-      if (!tagResult) {
-        throw new CustomError("Error adding tag", 500);
-      }
-
-      // lisätään sovelluskohtainen tägi
-      const appData = {
-        tag_name: "ilenApp",
-        media_id: uploadResult.media.media_id,
-      };
-
-      const appOptions = {
-        method: "POST",
-        headers: {
-          "Content-Type": "appilcation/json",
-        },
-        body: JSON.stringify(appData),
-      };
-
-      const appResult = await fetchData<MessageResponse>(
-        "/api/tags",
-        appOptions
-      );
-      if (!appResult) {
-        throw new CustomError("Error adding appTag", 500);
-      }
-
-      router.push("/cards");
     } catch (error) {
       console.error(error);
+    } finally {
+      router.push("/");
     }
   };
   return (
@@ -85,7 +40,7 @@ const Modal = () => {
             <div className="mb-4">
               <label
                 htmlFor="title"
-                className="block text-gray-700 text-sm font-bold mb-2"
+                className="block text-foreground text-sm font-bold mb-2"
               >
                 Title
               </label>
@@ -93,13 +48,13 @@ const Modal = () => {
                 type="text"
                 name="title"
                 id="title"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow appearance-none border bg-bg-shade rounded w-full py-2 px-3 text-foreground leading-tight focus:outline-none focus:shadow-outline"
               />
             </div>
             <div className="mb-4">
               <label
                 htmlFor="description"
-                className="block text-gray-700 text-sm font-bold mb-2"
+                className="block text-foreground text-sm font-bold mb-2"
               >
                 Description
               </label>
@@ -107,53 +62,48 @@ const Modal = () => {
                 type="text"
                 name="description"
                 id="description"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow appearance-none border bg-bg-shade rounded w-full h-50 py-2 px-3 text-foreground leading-tight focus:outline-none focus:shadow-outline"
               />
             </div>
             <div className="mb-4">
               <label
-                htmlFor="tag"
-                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="public"
+                className="mx-4 text-foreground text-sm font-bold mb-2"
               >
-                Tag
+                Public
               </label>
-              <input
-                type="text"
-                name="tag"
-                id="tag"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              />
+              <input type="checkbox" name="public" id="public" />
             </div>
-            <div className="mb-4">
-              <label
-                htmlFor="file"
-                className="block text-gray-700 text-sm font-bold mb-2"
-              >
-                File
-              </label>
-              <input
-                className="block w-full text-sm text-gray-900 border-2 border-gray-300 rounded-md shadow-sm cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 px-2 py-2"
-                id="file_input"
-                type="file"
-                name="file"
-                accept="image/*, video/*"
-              />
-            </div>
-            <button
-              type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            <label htmlFor="exp" className="text-foreground">
+              Choose exp amount:
+            </label>
+            <select
+              id="exp"
+              name="exp"
+              className="mx-2 p-1 text-foreground bg-bg-shade rounded-2xl"
             >
-              Submit
-            </button>
+              <option value="5">5</option>
+              <option value="15">15</option>
+              <option value="25">25</option>
+              <option value="30">30</option>
+            </select>
+            <div className=" mt-2 flex justify-center">
+              <button
+                type="submit"
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              >
+                Submit
+              </button>
+            </div>
           </form>
         </div>
         <div className="text-center">
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-center">
             <Link
               href="/cards"
-              className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300"
+              className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded shadow-sm hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300"
             >
-              Close
+              Cancel
             </Link>
           </div>
         </div>

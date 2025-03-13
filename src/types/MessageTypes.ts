@@ -1,4 +1,4 @@
-import { MediaItem, UserWithNoPassword } from "./DBTypes";
+import { MediaItem, QuestItem, UserWithNoPassword } from "./DBTypes";
 
 type MessageResponse = {
   message: string;
@@ -41,7 +41,7 @@ type UploadResponse = MessageResponse & {
 };
 
 type MediaResponse = MessageResponse & {
-  media: MediaItem;
+  media: QuestItem;
 };
 
 export type {
