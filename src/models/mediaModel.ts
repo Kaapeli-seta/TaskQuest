@@ -119,6 +119,52 @@ const fetchUserStats = async (userToken: TokenContent): Promise<UserStats> => {
   return rows[0];
 };
 
+const updateUserLevel = async (userToken: TokenContent) => {
+  const sql = `UPDATE UserStats SET user_exp = user_exp - 100 , user_level= user_level + 1, user_points = user_points + 1 WHERE user_id = ?`;
+  const params = userToken.user_id;
+  const stmt = promisePool.format(sql, params);
+  await promisePool.execute<RowDataPacket[] & UserStats[]>(stmt);
+  return await fetchUserStats(userToken);
+};
+
+const postCard = async (
+  card: FormData,
+  userToken: TokenContent
+): Promise<QuestItem> => {
+  const user_id = userToken.user_id;
+  const title = card.get("title");
+  const quest_text = card.get("description");
+  const reward_count = card.get("exp");
+  const shared = card.get("public")?.toString();
+  let is_public;
+  if (shared == "on") {
+    is_public = 1;
+  } else {
+    is_public = 0;
+  }
+
+  const sql = `INSERT INTO Quests (user_id, title, quest_text, reward_type, reward_count, is_public)
+               VALUES (?, ?, ?, "exp", ?, ?)`;
+  const params = [user_id, title, quest_text, reward_count, is_public];
+  const stmt = promisePool.format(sql, params);
+  const [result] = await promisePool.execute<ResultSetHeader>(stmt);
+  if (result.affectedRows === 0) {
+    throw new CustomError(ERROR_MESSAGES.MEDIA.NOT_CREATED, 500);
+  }
+  return await fetchQuestById(result.insertId);
+};
+
+const fetchQuestById = async (id: number): Promise<QuestItem> => {
+  const sql = `SELECT quest_id, title, quest_text, reward_type, reward_count, reset_time, is_done, is_public, created_at FROM Quests WHERE quest_id = ?`;
+  const params = id;
+  const stmt = promisePool.format(sql, params);
+  const [rows] = await promisePool.execute<RowDataPacket[] & QuestItem[]>(stmt);
+  if (rows.length === 0) {
+    throw new CustomError(ERROR_MESSAGES.MEDIA.NOT_FOUND, 404);
+  }
+  return rows[0];
+};
+
 ///
 ///
 ///
@@ -330,6 +376,10 @@ export {
   updateCardSelect,
   fetchPublicMedia,
   fetchUserStats,
+  updateUserLevel,
+  postCard,
+  fetchQuestById,
+  //not Used
   fetchAllMedia,
   fetchMediaById,
   postMedia,

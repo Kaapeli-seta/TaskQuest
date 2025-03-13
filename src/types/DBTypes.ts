@@ -41,7 +41,7 @@ type QuestItem = {
   quest_text: string;
   reward_type: string;
   reward_count: number;
-  repeat_count: number;
+  reset_time: number;
   is_done: number;
   is_public: number;
   created_at: Date | string;
