@@ -26,7 +26,7 @@ Sovellus on toteutettu Next.js kirjastolla ja Tailwindillä.
 
 ## Logins screen
 
-![TaskQuest_register](https://github.com/user-attachments/assets/fa43e8c4-66ff-4279-a1b9-52c02e8a3d1d)
+![TaskQuest_login](https://github.com/user-attachments/assets/ff92813f-d740-40b0-ac96-157fd4fd2525)
 
 ## Register screen
 
