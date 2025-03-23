@@ -6,6 +6,7 @@ import {
 } from "@/models/mediaModel";
 import { NextRequest, NextResponse } from "next/server";
 
+// Updates user level when exp is 100
 export async function GET() {
   try {
     const userToken = await getSession();
@@ -23,6 +24,7 @@ export async function GET() {
   }
 }
 
+// Updates user stats
 export async function PUT(request: NextRequest) {
   try {
     const val = await request.text();
