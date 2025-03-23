@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Sovellus on toteutettu Next.js kirjastolla ja Tailwindillä.
 
-## Getting Started
+## tämän hetkiset toiminnat
 
-First, run the development server:
+1. Sovellukseen pystyy kirjautumaan ja rekisteröitymään
+2. Jos käyttäjä ei ole kirjautunut hänet ohjataan kirjautumis sivulle
+3. Käyttäjä pystyy:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Luomaan itselleen tehtäviä
+- Suorittamaan luomiaan tehtävi ja saa da niis xp pisteitä
+- nostamaan statiikoita pisteiden avulla
+- Selaamaan omia luomiaan tehtäviä
+- Selaamaan muiden käyttäjien luomia julkisia tehtäviä
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Sivusto on responsiivinen ikkuna kokoon sekä systeemin dark ja light modeen
+6. Käyttäjän pisteitä päivitetään automaatisesti kun kotisivu avataan (UI elementti rikki)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Uudet muutoksia ovat
+- rekisteröityminen
+- tehtävien suorittaminene
+- xp keräys
+- pisteiden keräys
+- xp palkin toiminta
+- statiikan nostaminen pisteiden avulla (nappien toiminta)
+- sivun tyylittelyä on muutettu vähän
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Logins screen
 
-## Learn More
+![TaskQuest_login](https://github.com/user-attachments/assets/ff92813f-d740-40b0-ac96-157fd4fd2525)
 
-To learn more about Next.js, take a look at the following resources:
+## Register screen
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+![TaskQuest_register](https://github.com/user-attachments/assets/7a707282-b6ec-47c0-9e3a-0e2cc23f8d4b)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Home page
 
-## Deploy on Vercel
+![TaskQuest_home](https://github.com/user-attachments/assets/e26da4d2-f4eb-41f2-ae9f-1193553f16ad)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Home white mode
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+![TaskQuest_home_white](https://github.com/user-attachments/assets/d987f115-5228-4911-9052-2adab4093240)
+
+## All user created cards
+
+![TaskQuest_all_cards](https://github.com/user-attachments/assets/43d5d47f-6f5e-425c-9b70-61819a8cdf1f)
+
+## Creating a card/quest
+
+![TaskQuest_create_card](https://github.com/user-attachments/assets/a3196a8a-0867-421c-aed6-41ca018a2462)
+
+## Public cards
+
+![TaskQuest_public](https://github.com/user-attachments/assets/4c66da0d-2f5b-4eb5-81a9-467733a83359)
+
+## Database structure
+
+![TaskQuest_db_old](https://github.com/user-attachments/assets/69f918ea-0285-498b-bc82-6af7f485e823)

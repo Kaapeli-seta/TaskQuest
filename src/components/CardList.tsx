@@ -20,7 +20,9 @@ const CardList = async () => {
             className={item.is_done ? cardComplete : cardStyle}
           >
             <h3 className="text-lg font-bold self-center p-4">{item.title}</h3>
-            <p className="text-center p-4">{item.quest_text}</p>
+            <p className=" m-4 text-center break-all p-4 border-2 rounded-2xl border-foreground-opose">
+              {item.quest_text}
+            </p>
             <div className="flex justify-between p-4">
               <p>
                 {item.reward_type}: {item.reward_count}

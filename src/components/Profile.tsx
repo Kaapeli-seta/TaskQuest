@@ -1,71 +1,102 @@
-import { getSession, logout } from "@/lib/authActions";
-import { fetchUserStats, updateUserLevel } from "@/models/mediaModel";
+"use client";
 
-const Profile = async () => {
-  const userToken = await getSession();
-  if (!userToken) return;
+import CustomError from "@/classes/CustomError";
+import { fetchData } from "@/lib/functions";
+import { switcher } from "@/lib/switch";
+import { UserStats } from "@/types/DBTypes";
+import { useEffect, useState } from "react";
 
-  let stats = await fetchUserStats(userToken);
-  if (stats.user_exp > 100) {
-    stats = await updateUserLevel(userToken);
-  }
+const Profile = ({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) => {
+  const [stats, setStats] = useState<UserStats | null>(null);
+
+  useEffect(() => {
+    const getStats = async () => {
+      try {
+        const statsResult = await fetchData<UserStats>("/api/stats", {
+          method: "GET",
+        });
+        if (!statsResult) {
+          throw new CustomError("Erro uploading media", 500);
+        }
+        setStats(statsResult);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getStats();
+  }, []);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const setPoints = async (evt: any) => {
+    try {
+      const statsResult = await fetchData<UserStats>("/api/stats", {
+        method: "PUT",
+        body: evt.target.value,
+      });
+      if (!statsResult) {
+        throw new CustomError("Erro uploading media", 500);
+      }
+      setStats(statsResult);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   if (!stats) return;
-  const status = `[${stats.user_exp}%]`;
+
+  // Tailwind does not support asyncronous varibles for some reason
+  const state = switcher(stats);
   return (
     <div className="bg-bg-shade w-full">
       <h1 className="p-4 text-4xl font-bold">Level {stats.user_level}</h1>
       <div className=" m-auto rounded-2xl justify-center w-[90%] h-8 border-2  border-amber-50 ">
-        <div className={`m-2 rounded-2xl w-${status} h-3 bg-amber-50`}></div>
+        <div className={`m-2 rounded-2xl ${state} h-3 bg-amber-50`}></div>
       </div>
       <div className="text-2xl text-center">
         <p>Points {stats.user_points}</p>
       </div>
       <div className="flex flex-col md:flex-row text-2xl text-center items-center">
-        <div className="m-4 flex bg-stone-800 rounded-4xl">
-          <p className="m-4 w-fit">int: {stats.user_int}</p>
+        <div className="m-4 flex shadow-lg shadow-regal-blue rounded-4xl">
+          <p className="m-4 w-fit">Int: {stats.user_int}</p>
           <button
             type="submit"
-            className=" w-fit bg-background hover:bg-stone-800 text-white font-bold py-2 px-4 rounded-r-2xl focus:outline-none focus:shadow-outline"
+            value="int"
+            className=" w-fit bg-background hover:bg-bg-darker text-foreground font-bold py-2 px-4 rounded-r-2xl focus:outline-none focus:shadow-outline"
+            onClick={setPoints}
           >
             +
           </button>
         </div>
 
-        <div className="m-4 flex bg-stone-800 rounded-4xl">
-          <p className="m-4 w-fit">dex: {stats.user_dex}</p>
+        <div className="m-4 flex shadow-lg shadow-regal-blue rounded-4xl">
+          <p className="m-4 w-fit">Dex: {stats.user_dex}</p>
           <button
             type="submit"
-            className=" w-fit bg-background hover:bg-stone-800 text-white font-bold py-2 px-4 rounded-r-2xl focus:outline-none focus:shadow-outline"
+            value="dex"
+            className=" w-fit bg-background hover:bg-bg-darker text-foreground  font-bold py-2 px-4 rounded-r-2xl focus:outline-none focus:shadow-outline"
+            onClick={setPoints}
           >
             +
           </button>
         </div>
-        <div className="m-4 flex bg-stone-800 rounded-4xl">
-          <p className="m-4 w-fit">str: {stats.user_str}</p>
+        <div className="m-4 flex shadow-lg shadow-regal-blue rounded-4xl">
+          <p className="m-4 w-fit">Str: {stats.user_str}</p>
           <button
             type="submit"
-            className=" w-fit bg-background hover:bg-stone-800 text-white font-bold py-2 px-4 rounded-r-2xl focus:outline-none focus:shadow-outline"
+            value="str"
+            className=" w-fit bg-background hover:bg-bg-darker text-foreground font-bold py-2 px-4 rounded-r-2xl focus:outline-none focus:shadow-outline"
+            onClick={setPoints}
           >
             +
           </button>
         </div>
       </div>
-      <form
-        className="flex justify-end"
-        action={async () => {
-          "use server";
-          await logout();
-          // redirect('/');
-        }}
-      >
-        <button
-          type="submit"
-          className="m-4 bg-background hover:bg-stone-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-        >
-          Logout
-        </button>
-      </form>
+      {/* logout button is a server element so it is passed as a child element*/}
+      {children}
     </div>
   );
 };

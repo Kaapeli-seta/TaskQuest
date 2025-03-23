@@ -59,7 +59,7 @@ CREATE TABLE Quests (
 INSERT INTO UserLevels (level_name) VALUES ('Admin'), ('User'), ('Guest');
 
 INSERT INTO Users (username, password, email, user_level_id) VALUES
-('JohnDoe', 'to-be-hashed-pw1', 'johndoe@example.com', 2);
+('John', 'TheTestUser', 'john@test.com', 2);
 
 
 INSERT INTO UserStats (user_id, user_exp, user_level, user_points, user_int, user_str, user_dex) VALUES

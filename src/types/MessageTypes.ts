@@ -1,4 +1,4 @@
-import { MediaItem, QuestItem, UserWithNoPassword } from "./DBTypes";
+import { QuestItem, UserStats, UserWithNoPassword } from "./DBTypes";
 
 type MessageResponse = {
   message: string;
@@ -17,6 +17,10 @@ type LoginResponse = MessageResponse & {
 
 type UserResponse = MessageResponse & {
   user: UserWithNoPassword;
+};
+
+type UserStatsResponse = MessageResponse & {
+  user: UserStats;
 };
 
 type UserDeleteResponse = MessageResponse & {
@@ -50,6 +54,7 @@ export type {
   LoginResponse,
   UploadResponse,
   UserResponse,
+  UserStatsResponse,
   UserDeleteResponse,
   AvailableResponse,
   BooleanResponse,
