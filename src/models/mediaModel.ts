@@ -1,4 +1,3 @@
-import { ERROR_MESSAGES } from "@/utils/errorMessages";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { TokenContent, QuestItem, UserStats } from "@/types/DBTypes";
 import promisePool from "@/lib/db";
@@ -37,10 +36,13 @@ const fetchOwnerSelectedMedia = async (
   return rows;
 };
 
+const updateCardById = async (id: number) => {
+  const sql = `UPDATE Quests SET is_done = 1 WHERE quest_id = ?`;
+  const stmt = promisePool.format(sql, id);
+  await promisePool.execute<RowDataPacket[] & QuestItem[]>(stmt);
+};
+
 const updateCardSelect = async (item: QuestItem): Promise<void> => {
-  console.log(
-    `UPDATE Quests SET selected = 1 WHERE quest_id = ${item.quest_id}`
-  );
   const sql = `UPDATE Quests SET selected = 1 WHERE quest_id = ?`;
   const stmt = promisePool.format(sql, item.quest_id);
   await promisePool.execute<RowDataPacket[] & QuestItem[]>(stmt);
@@ -66,13 +68,28 @@ const fetchUserStats = async (userToken: TokenContent): Promise<UserStats> => {
   const stmt = promisePool.format(sql, params);
 
   const [rows] = await promisePool.execute<RowDataPacket[] & UserStats[]>(stmt);
-  if (!rows.length)
-    throw new CustomError(ERROR_MESSAGES.MEDIA.NOT_FOUND_LIKED, 404);
+  if (!rows.length) throw new CustomError("User stats not found", 404);
   return rows[0];
+};
+
+const updateUserExp = async (userToken: TokenContent, val: number) => {
+  const sql = `UPDATE UserStats SET user_exp = user_exp + ? WHERE user_id = ?`;
+  const params = [val, userToken.user_id];
+  const stmt = promisePool.format(sql, params);
+  await promisePool.execute<RowDataPacket[] & UserStats[]>(stmt);
+  return;
 };
 
 const updateUserLevel = async (userToken: TokenContent) => {
   const sql = `UPDATE UserStats SET user_exp = user_exp - 100 , user_level= user_level + 1, user_points = user_points + 1 WHERE user_id = ?`;
+  const params = userToken.user_id;
+  const stmt = promisePool.format(sql, params);
+  await promisePool.execute<RowDataPacket[] & UserStats[]>(stmt);
+  return await fetchUserStats(userToken);
+};
+
+const updateUserStats = async (userToken: TokenContent, val: string) => {
+  const sql = `UPDATE UserStats SET user_${val} = user_${val} + 1 , user_points = user_points - 1 WHERE user_id = ?`;
   const params = userToken.user_id;
   const stmt = promisePool.format(sql, params);
   await promisePool.execute<RowDataPacket[] & UserStats[]>(stmt);
@@ -101,7 +118,7 @@ const postCard = async (
   const stmt = promisePool.format(sql, params);
   const [result] = await promisePool.execute<ResultSetHeader>(stmt);
   if (result.affectedRows === 0) {
-    throw new CustomError(ERROR_MESSAGES.MEDIA.NOT_CREATED, 500);
+    throw new CustomError("post card failed", 500);
   }
   return await fetchQuestById(result.insertId);
 };
@@ -112,7 +129,7 @@ const fetchQuestById = async (id: number): Promise<QuestItem> => {
   const stmt = promisePool.format(sql, params);
   const [rows] = await promisePool.execute<RowDataPacket[] & QuestItem[]>(stmt);
   if (rows.length === 0) {
-    throw new CustomError(ERROR_MESSAGES.MEDIA.NOT_FOUND, 404);
+    throw new CustomError("could not find card/quest", 404);
   }
   return rows[0];
 };
@@ -121,9 +138,12 @@ export {
   fetchOwnerMedia,
   fetchOwnerUncompleteMedia,
   fetchOwnerSelectedMedia,
+  updateCardById,
   updateCardSelect,
+  updateUserStats,
   fetchPublicMedia,
   fetchUserStats,
+  updateUserExp,
   updateUserLevel,
   postCard,
   fetchQuestById,

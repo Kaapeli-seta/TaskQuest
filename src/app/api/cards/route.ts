@@ -3,6 +3,7 @@ import { postCard } from "@/models/mediaModel";
 import { MediaResponse } from "@/types/MessageTypes";
 import { NextRequest, NextResponse } from "next/server";
 
+// Posts a new card/quest
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();

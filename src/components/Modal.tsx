@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 
+// this is a Modal for posting a new card/quest
 const Modal = () => {
   const router = useRouter();
 
@@ -58,10 +59,10 @@ const Modal = () => {
               >
                 Description
               </label>
-              <input
-                type="text"
+              <textarea
                 name="description"
                 id="description"
+                maxLength={150}
                 className="shadow appearance-none border bg-bg-shade rounded w-full h-50 py-2 px-3 text-foreground leading-tight focus:outline-none focus:shadow-outline"
               />
             </div>

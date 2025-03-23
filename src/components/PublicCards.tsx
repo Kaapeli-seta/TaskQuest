@@ -17,7 +17,9 @@ const PublicCards = async () => {
                 {item.title}
               </h3>
             </div>
-            <p className="text-center p-4">{item.quest_text}</p>
+            <p className="m-4 text-center break-all p-4 border-2 rounded-2xl border-foreground-opose">
+              {item.quest_text}
+            </p>
             <div className="flex justify-between p-4">
               <p>
                 {item.reward_type}: {item.reward_count}

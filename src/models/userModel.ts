@@ -1,11 +1,9 @@
-import { RowDataPacket } from "mysql2";
+import { ResultSetHeader, RowDataPacket } from "mysql2";
 import promisePool from "@/lib/db";
-import { UserWithLevel, UserWithNoPassword } from "@/types/DBTypes";
+import { User, UserWithLevel, UserWithNoPassword } from "@/types/DBTypes";
 import CustomError from "@/classes/CustomError";
 
-const getUserById = async (
-  id: number
-): Promise<UserWithNoPassword | unknown> => {
+const getUserById = async (id: number): Promise<UserWithNoPassword> => {
   const [rows] = await promisePool.execute<
     RowDataPacket[] & UserWithNoPassword[]
   >(
@@ -37,4 +35,38 @@ const getUserByUsername = async (
   return rows[0];
 };
 
-export { getUserById, getUserByUsername };
+const createUser = async (
+  user: Pick<User, "username" | "password" | "email">,
+  userLevelId = 2
+): Promise<UserWithNoPassword> => {
+  const sql = `INSERT INTO Users (username, password, email, user_level_id)
+       VALUES (?, ?, ?, ?)`;
+  const stmt = promisePool.format(sql, [
+    user.username,
+    user.password,
+    user.email,
+    userLevelId,
+  ]);
+  const [result] = await promisePool.execute<ResultSetHeader>(stmt);
+
+  if (result.affectedRows === 0) {
+    throw new CustomError("Failed to create user", 500);
+  }
+
+  await createUserStats(result.insertId);
+
+  return await getUserById(result.insertId);
+};
+
+const createUserStats = async (id: number) => {
+  const sql = `INSERT INTO UserStats (user_id, user_exp, user_level, user_points, user_int, user_str, user_dex) VALUES
+  (?, 0, 1, 0, 0, 0, 0);`;
+  const stmt = promisePool.format(sql, [id]);
+  const [result] = await promisePool.execute<ResultSetHeader>(stmt);
+  if (result.affectedRows === 0) {
+    throw new CustomError("Failed to create stats", 500);
+  }
+  return;
+};
+
+export { getUserById, getUserByUsername, createUser };
